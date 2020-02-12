@@ -1,0 +1,22 @@
+name: Spark
+version: 51
+path: /home/talal/Downloads/spark-2.4.4/
+instrumentation:
+  classPaths:
+    - assembly/target/scala-2.11/jars/spark-core_2.11-2.4.4.jar
+    # Must come after the main Spark jar
+    - assembly/target/scala-2.11/jars/hadoop-common-2.6.5.jar
+    - assembly/target/scala-2.11/jars/hadoop-client-2.6.5.jar
+    - assembly/target/scala-2.11/jars/commons-lang-2.6.jar
+  commands: .*spark/core.*org.apache.spark.FileSuite.*
+  classes: .*Runner.*
+optimization:
+  classPaths:
+    - assembly/target/scala-2.11/jars/spark-core_2.11-2.4.4.jar
+    - assembly/target/scala-2.11/jars/hadoop-common-2.6.5.jar
+    - assembly/target/scala-2.11/jars/hadoop-mapreduce-client-core-2.6.5.jar
+    #- recurse:jars/*
+datapipe:
+  import: build/mvn -Pyarn -Phadoop-2.6 -Dhadoop.version=2.6.5 -pl sql/core -am -q test -pl sql/core -am -q test -DwildcardSuites=org.apache.spark.FileSuite -Dtest=none -Dmaven.repo.local=/home/talal/Downloads/spark-2.4.4/assembly/target/scala-2.11/jars -Dmaven.compile.fork=true -Dmaven.junit.fork=true -Denforcer.skip=true --offline
+  export: build/mvn -Pyarn -Phadoop-2.6 -Dhadoop.version=2.6.5 -pl sql/core -am -q test -pl sql/core -am -q test -DwildcardSuites=org.apache.spark.FileSuite -Dtest=none -Dmaven.repo.local=/home/talal/Downloads/spark-2.4.4/assembly/target/scala-2.11/jars -Dmaven.compile.fork=true -Dmaven.junit.fork=true -Denforcer.skip=true --offline
+  verify: build/mvn -Pyarn -Phadoop-2.6 -Dhadoop.version=2.6.5 -pl sql/core -am -q test -pl sql/core -am -q test -DwildcardSuites=org.apache.spark.FileSuite -Dtest=none -Dmaven.repo.local=/home/talal/Downloads/spark-2.4.4/assembly/target/scala-2.11/jars -Dmaven.compile.fork=true -Dmaven.junit.fork=true -Denforcer.skip=true --offline

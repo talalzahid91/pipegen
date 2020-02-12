@@ -1,0 +1,23 @@
+name: Spark
+version: 51
+path: /home/talal/Downloads/spark-2.4.4-bin-hadoop2.7/
+instrumentation:
+  classPaths:
+    - jars/spark-core_2.11-2.4.4.jar
+    # Must come after the main Spark jar
+    - jars/hadoop-common-2.7.3.jar
+    - jars/hadoop-client-2.7.3.jar
+    - jars/commons-logging-1.1.3.jar
+    - jars/commons-lang-2.6.jar
+  commands: .*spark/core.*org.apache.spark.FileSuite.*
+  classes: .*Runner.*
+optimization:
+  classPaths:
+    - jars/spark-core_2.11-2.4.4.jar
+    - jars/hadoop-common-2.7.3.jar
+    - jars/hadoop-mapreduce-client-core-2.7.3.jar
+    #- recurse:jars/*
+datapipe:
+  import: build -Pyarn -Phadoop-2.7 -Dhadoop.version=2.7.3 -DskipTests clean package
+  export: build -Pyarn -Phadoop-2.7 -Dhadoop.version=2.7.3 -pl sql/core -am -q test -DwildcardSuites=org.apache.spark.FileSuite -Dtest=none -Dmaven.repo.local=/home/talal/Downloads/spark-2.4.4-bin-hadoop2.7/jars -Dmaven.compile.fork=true -Dmaven.junit.fork=true -Denforcer.skip=true --offline
+  verify: build -Pyarn -Phadoop-2.7 -Dhadoop.version=2.7.3 -pl sql/core -am -q test -DwildcardSuites=org.apache.spark.FileSuite -Dtest=none -Dmaven.repo.local=/home/talal/Downloads/spark-2.4.4-bin-hadoop2.7/jars -Dmaven.compile.fork=true -Dmaven.junit.fork=true -Denforcer.skip=true --offline
